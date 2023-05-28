@@ -3,4 +3,7 @@
   (loaded)="onLoaded($event)"
   [img]="imgParent"></app-img>
 
+<app-product [product]="product" *ngFor="let product of products"></app-product>
+
+
 <router-outlet></router-outlet>
