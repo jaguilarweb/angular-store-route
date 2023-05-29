@@ -18,15 +18,15 @@ import {
 export class ImgComponent
   implements OnInit, OnChanges, AfterViewInit, OnDestroy
 {
-  img: string = '';
+  @Input() img: string = '';
 
   //Con esta estrategia puedo identificar el input al cual quiero escuchar en caso de cambio:
-  @Input('img')
+/*   @Input('img')
   set changeImg(newImg: string) {
     this.img = newImg;
     console.log('change just img', this.img)
     //Code
-  }
+  } */
 
   @Input() alt: string = '';
   @Output() loaded = new EventEmitter<string>();
@@ -61,10 +61,10 @@ export class ImgComponent
     //Corre solo una vez, cuando se inicializa el componentes
     //No usar para evaluar cambios en los inputs.
     console.log('ngOnInit', 'imgValue => ', this.img);
-    this.counterFn = window.setInterval(() => {
+/*     this.counterFn = window.setInterval(() => {
       this.counter++;
       console.log('run counter');
-    }, 1000);
+    }, 1000); */
   }
 
   ngAfterViewInit() {
@@ -80,7 +80,7 @@ export class ImgComponent
     //delete component
     console.log('ngOnDestroy');
     //Ejemplo de borrar procesos que podrian quedar funcionando aún cuando se haya eliminado el component;
-    window.clearInterval(this.counterFn);
+   /*  window.clearInterval(this.counterFn); */
   }
 
   imgError() {
