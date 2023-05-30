@@ -10,6 +10,7 @@ import { Product } from '../../models/product.model';
 export class ProductComponent implements OnInit {
   @Input() product!: Product;
   @Output() addedProduct = new EventEmitter<Product>();
+  @Output() showDetail = new EventEmitter<string>();
 
   constructor() {
    }
@@ -19,6 +20,10 @@ export class ProductComponent implements OnInit {
 
   onAddToCart() {
     this.addedProduct.emit(this.product);
+  }
+
+  onShowDetail(){
+    this.showDetail.emit(this.product.id);
   }
 
 }
