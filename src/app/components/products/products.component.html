@@ -1,7 +1,10 @@
 <p>La cantidad {{ myShoppingCart.length }}</p>
 <p>Total: $ {{ total }}</p>
 <p>
-  Today; {{ today | date: 'short'  }}
+  Today: {{ today | date: 'short'  }}
+</p>
+<p>
+  Tiempo {{ today | timeAgo  }}
 </p>
 <p>
   Otra fecha; {{ date | date: 'yyyy.dd.MM'  }}
