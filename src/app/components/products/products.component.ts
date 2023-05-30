@@ -16,7 +16,7 @@ export class ProductsComponent implements OnInit {
 
   constructor(
     private storeService: StoreService,
-    private productService: ProductsService
+    private productsService: ProductsService
   ) {
     //Puede ir acá porque no es es async.
     this.myShoppingCart = this.storeService.getShoppingCart();
@@ -24,7 +24,7 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     //Petición async
-    this.productService.getAllProducts().subscribe((data) => {
+    this.productsService.getAllProducts().subscribe((data) => {
       this.products = data;
     });
   }
