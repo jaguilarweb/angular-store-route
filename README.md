@@ -15,6 +15,7 @@ El proyecto corresponde al Frontend de una tienda digital usando Angular.
 - Node
 - Angular
 - [Api externa](https://young-sands-07814.herokuapp.com/api/products)
+- [imagenes aleatorias](https://placeimg.com/640/480/any)
 - Postman
 
 ## Solicitudes HTTP
@@ -49,3 +50,45 @@ En estricto rigor podriamos utlizar cualquier otra librería, por ejemplo:
 - Bootstrap (versión ngbootstrap componentes)
 
 ### POST
+
+Para crear productos, partimos creando el método createProduct en nuestro respectivo servicio.
+Y luego creamos en el componente el endpoint, en este caso los estamos creamdo en products.component.
+
+
+### DTO: Data Transfer Object
+
+No siempre cohincide con los datos de nuestro modelo de la base de datos.
+Por tanto, en lugar de utilizar el DTO en el servicio, utilizaremos un DTO en el componente.
+
+Ejemplo: Cuando modelamos la interfaz para tipar nuestro objeto, en este caso product, incorporamos como atributo la id. No obstante, durante el desarrollo cuando queremos elaborar métodos y necesitamos enviar la data tipada, al emplear la interfaz del modelo para tipar nos exigirá que instanciemos el nuevo objeto incorporando todos los atributos señalados en la interfaz del modelo incluida en este caso la id. El problema es que regularmente la id no la asignaremos manualmente, sino que será asignada por la base de datos cuando se cree el objeto y se guarde en ella. Por tanto, antes de que se guarde el objeto y mientras desarrollamos no tenemos la id del nuevo objeto, que paradojicamente solicita esa id para crearse.
+Para resolver esta disyuntiva es que nos sirven los DTO, ya que nos permite tipar el objeto pero con una deseada flexibilidad para incorporar o no atributos que están reflejados en el modelo. De este modo, al crear el DTO nos permite tipar el objeto sin que este me exija la id pero me sigue ayudando con el tipado de los otros atributos.
+
+En este caso, el DTO lo creamo en el mismo archivo del modelo.
+Así tenemos en primera instancia la interfaz del producto, y luego creamos una interfaz (dto) especial para el el objeto con el cual se creará un producto propiamente tal. Así en el ejemplo que sigue, luego del Producto tenemos la interfaz CreateProductDTO:
+
+```typescript
+export interface Product {
+  id: string;
+  title: string;
+  price: number;
+  images: string[];
+  description: string;
+  category: Category;
+}
+
+export interface CreateProductDTO {
+  title: string;
+  price: number;
+  images: string[];
+  description: string;
+  categoryId: number;
+}
+```
+
+Ahora, con la finalidad de evitar repetir tantos atributos similares entre las interfaces solemos utilizar una técnica que es extender el comportamiento de una clase a otra y utilizar el Omit, señalando los atributos que omitiremos, y tambiñen podemos señalar un atributo nuevo que requeriremos. Por ejemplo, en este caso para crear solo necesitamos la id de la categoría. No obstante, en el modelo usabamos un objeto categoría.
+
+```typescript
+export interface CreateProductDTO extends Omit<Product, 'id' | 'category'> {
+  categoryId: number;
+}
+```
