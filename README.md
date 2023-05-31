@@ -36,4 +36,16 @@ Una estrategia para enfrentar este cambio, es crear una nueva interfaz con el ti
 
 Para obtener el detalle de un producto incorporamos elementos a la vista de product que será un menú lateral retráctil.
 
+Vamos a utilizar la librería swiper y para efectos de seguir el curso incluiremos la version 8, ya que la versión actualizada ya no tiene soporte para componentes de Angular.
+
+Para instalar la versión 8 de swiper, ejecutamos el siguiente comando:
+
+```bash
+npm install swiper@8.4
+```
+
+En estricto rigor podriamos utlizar cualquier otra librería, por ejemplo:
+
+- Bootstrap (versión ngbootstrap componentes)
+
 ### POST
