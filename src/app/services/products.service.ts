@@ -34,4 +34,8 @@ export class ProductsService {
     return this.http.patc<Product>(`${this.apiUrl}/${id}`, changes);
   } */
 
+  deleteProduct(id: string) {
+    return this.http.delete<boolean>(`${this.apiUrl}/${id}`);
+  }
+
 }

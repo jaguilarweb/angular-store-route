@@ -75,4 +75,14 @@ export class ProductsComponent implements OnInit {
       this.productChosen = data;
     });
   }
+
+  onDeleteProduct(id: string) {
+    //Elimina el objeto de la base de datos
+    this.productsService.deleteProduct(id).subscribe(() => {
+      const index: number = this.products.findIndex((product) => product.id === id);
+      //Elimina y actualiza la interfaz gráfica
+      this.products.splice(index, 1);
+      this.showProductDetail = false;
+    });
+  }
 }
