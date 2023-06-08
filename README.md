@@ -117,3 +117,20 @@ Para ello, en el servicio creamos un método que reciba estos parámetros y los 
     });
   }
 ```
+
+## Observables vs Promesas
+
+### Observables:
+
+- Omitir / responder varias respuestas
+- Stream de datos, transmisión de muchos datos
+- Permite hacer transformaciones de datos y cancelar la subscripción
+- Permite transformar la respuesta (pipes)
+- Es posible escuchar constantemente : eventos / responsive / fetchs
+
+
+### Promesa :
+
+- Retorna una única respuesta
+- Solo se ejecuta una vez
+- Simplicidad
