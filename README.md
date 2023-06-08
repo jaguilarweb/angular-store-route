@@ -92,3 +92,28 @@ export interface CreateProductDTO extends Omit<Product, 'id' | 'category'> {
   categoryId: number;
 }
 ```
+
+Luego seguimos la misma lógica con todas las peticiones http, creando los métodos en el servicio para recibir dichas peticiones:
+
+- createProduct
+- updateProduct
+- deleteProduct
+- getAllProducts
+- getProductById
+
+### Paginación (Parámetros URL)
+
+Para implementar paginación, utilizaremos la técnica del limit y offset.
+
+- limit: cantidad de elementos que queremos obtener
+- offset: cantidad de elementos que queremos saltar
+
+Para ello, en el servicio creamos un método que reciba estos parámetros y los envíe a la api.
+
+```typescript
+    getProductByPage(limit: number, offset: number){
+    return this.http.get<Product[]>(`${this.apiUrl}`, {
+      params: {limit, offset}
+    });
+  }
+```

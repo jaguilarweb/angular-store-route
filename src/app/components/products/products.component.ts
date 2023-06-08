@@ -16,6 +16,10 @@ export class ProductsComponent implements OnInit {
   showProductDetail = false;
   productChosen!: Product;
 
+  //Para avanzar por las páginas dinámicamente
+  limit = 10;
+  offset=0;
+
   constructor(
     private storeService: StoreService,
     private productsService: ProductsService
@@ -26,8 +30,12 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     //Petición async
-    this.productsService.getAllProducts().subscribe((data) => {
+/*     this.productsService.getAllProducts().subscribe((data) => {
       this.products = data;
+    }); */
+    this.productsService.getProductByPage(10, 0).subscribe((data) => {
+      this.products = data;
+      this.offset += this.limit;
     });
   }
 
@@ -85,4 +93,12 @@ export class ProductsComponent implements OnInit {
       this.showProductDetail = false;
     });
   }
+
+  loadMore(){
+    this.productsService.getProductByPage(this.limit, this.offset).subscribe((data) => {
+      this.products = this.products.concat(data);
+      this.offset += this.limit;
+    });
+  }
+
 }

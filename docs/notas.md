@@ -231,7 +231,8 @@ HTML Padre
 </app-img>
 
 Controlador padre
-```
+
+```ts
 export class AppComponent {
   imgParent = ''
 
@@ -251,7 +252,7 @@ Para recibir un objeto product en el controlador del componente, el cual sea env
 
 Si queremos inicializarlo vacio, tendríamos que modificar el modelo y definir que todos los atributos son opcionales, para ello deberiamos agregar un signo de interrogación en cada atributo del modelo:
 
-```
+```ts
 export interface Product {
   id?: string;
   price?: number;
@@ -260,17 +261,19 @@ export interface Product {
 ```
 
 Así en el controlador quedaría:
-@Input() product: Product = {};
+`@Input() product: Product = {};`
 
 Lo anterior no es una buena práctica porque la finalidad de establecer el modelo es justamente que pueda detectar errores al no agregar los atributos.
 
 Por tanto, lo mejor sería inicializar los atributos con valores vacios.
 
+```ts
 @Input() product: Product = {
   id: '',
   price: 0,
   title:''
 };
+```
 
 Si quisiera enviar una variable con un nombre diferente al regular debería enviarlo de la siguiente forma:
 
@@ -279,8 +282,13 @@ HTML
 </app-product>
 
 Controlador
+```ts
 @Input('my-product') product: Product = {
   id: '',
   price: 0,
   title:''
 };
+````
+
+
+
