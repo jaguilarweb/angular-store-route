@@ -134,3 +134,51 @@ Para ello, en el servicio creamos un método que reciba estos parámetros y los 
 - Retorna una única respuesta
 - Solo se ejecuta una vez
 - Simplicidad
+
+
+#### Reintentar peticiones
+
+Esto puede generarse por apuntar mal hacia una dirección url.
+
+Para ello, podemos utilizar el operador retry de rxjs.
+
+```typescript
+    getProductByPage(limit: number, offset: number){
+    return this.http.get<Product[]>(`${this.apiUrl}`, {
+      params: {limit, offset}
+    }).pipe(retry(3)); //veces que intentaré la petición
+  }
+```
+
+También podemos utiliar 'retryWhen' que reintentará la petición cuando se cumpla una condición que podemos especificar.
+
+## Buenas Prácticas
+
+### CORS
+
+Cross-Origin Resource Sharing, es permitir que podamos hacer peticiones desde varios dominios (dominios cruzados).
+
+Este problema tiene que ver con el origen de la petición.
+
+El backend solo acepta peticiones desde el mismo origen, cuando viene de otro dominio muestra un error de Cors.
+
+Habilitar los Cors es que el backend acepte peticiones desde otros dominios, pero también tiene que crear reglas de seguridad.
+
+Ejemplo:
+* Todos los dominios
+
+[mydomain, app.mydomain] Acepta dominios especificos
+
+[..., localhost:4200] Acepta desde dominios de desarrollo
+
+
+A veces no tendremos acceso al backend para que se hagan estas modificaciones, para estos casos Angular nos permite crear un proxy que modifica el origen para igualarlo al del backend (como lo hacen servicios como postman e insomnia, razón por las cuales no generan error de Cors).
+
+No obstante, esta no es una solución definitiva, ya que lo recomendado es que se establezcan las reglas de seguridad en el backend. Además hay que considerar que la solución que otorga Angula es solo para el ambiente de desarrollo. Por tanto, si la aplicación es llevada a producción sin corregir el tema de Cors no será posible corregirlo con el Proxy de Angular.
+
+Para crear el proxy de Angular, haremos lo siguiente:
+
+- Crearemos un archivo en el directorio raiz (junto al package.json) llamado proxy.config.json
+
+
+
