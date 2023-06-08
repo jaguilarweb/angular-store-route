@@ -178,7 +178,58 @@ No obstante, esta no es una solución definitiva, ya que lo recomendado es que s
 
 Para crear el proxy de Angular, haremos lo siguiente:
 
-- Crearemos un archivo en el directorio raiz (junto al package.json) llamado proxy.config.json
+Crearemos un archivo en el directorio raiz (junto al package.json) llamado proxy.config.json
+En el realizamos la configuración:
 
+```json
+{
+  "/api/*": {
+    "target": "https://young-sands-07814.herokuapp.com",
+    "secret": true,
+    "loglevel": "debug",
+    "changeOrigin": true
+  }
+}
+```
+
+Y luego en el package.json escribimos el script:
+
+```json
+"start:proxy": "ng serve --proxy-config proxy.config.json",
+```
+
+También podemos confirgurar los ambientes para que la url a la api sea escogida dinámicamente, conforme a los archivos de configuración de entorno.
+
+Para ello, en el archivo environment.ts escribimos la url de la api:
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: ''
+};
+```
+
+Y en el archivo environment.prod.ts escribimos la url de la api:
+
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://young-sands-07814.herokuapp.com'
+};
+```
+
+Luego, para que el servicio que consume esta api llene automaticamente la url hacemos lo siguiente:
+
+```typescript
+import { environment } from './../../environments/environment';
+
+@Injectable({
+  providedIn: 'root'
+})
+
+export class ProductsService {
+  private apiUrl = `${environment.API_URL}/api/products`;
+}
+```
 
 
