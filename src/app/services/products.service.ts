@@ -48,7 +48,7 @@ export class ProductsService {
     );
   }
 
-  fetchReadAndUpdate(id: string, dto:UpdateProductDTO){
+/*   fetchReadAndUpdate(id: string, dto:UpdateProductDTO){
     return zip(
       this.getProductById(id),
       this.updateProduct(id, dto)
@@ -57,7 +57,7 @@ export class ProductsService {
       const read = response[0];
       const update = response[1];
     })
-  }
+  } */
 
   getProductById(id: string) {
     return this.http.get<Product>(`${this.apiUrl}/${id}`).pipe(

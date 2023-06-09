@@ -70,7 +70,7 @@ export class ProductsComponent implements OnInit {
 
   // Obtener un producto y actualizarlo consecutivamente
   // Usando switchmap
-  readAndUpdate(id: string) {
+/*   readAndUpdate(id: string) {
     this.productsService.getProductById(id)
     .pipe(
       switchMap((product) => this.productsService.updateProduct(product.id, {title: 'change'})),
@@ -79,11 +79,11 @@ export class ProductsComponent implements OnInit {
       console.log(data);
     })
     this.productsService.fetchReadAndUpdate(id, {title: 'change'})
-    .subscribe((response: any) => {
+    .subscribe((response: any) => {  //Presenta un error
       const read = response[0];
       const update = response[1];
     })
-  }
+  } */
 
   onAddProduct() {
     const product: CreateProductDTO = {

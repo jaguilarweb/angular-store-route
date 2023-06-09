@@ -15,6 +15,7 @@ El proyecto corresponde al Frontend de una tienda digital usando Angular.
 - Node
 - Angular
 - [Api externa](https://young-sands-07814.herokuapp.com/api/products)
+- [Api externa Actualizada](https://fakeapi.platzi.com/en/rest/users)
 - [imagenes aleatorias](https://placeimg.com/640/480/any)
 - Postman
 
@@ -493,3 +494,18 @@ Y luego el componente realiza el siguiente ajuste:
     this.productsService.fetchReadAndUpdate(id, {title: 'nuevo'});
   }
   ```
+
+## Manejo de autenticación con Jwt
+
+Para lo anterior, exploramos nuestra api y el backend nos debe proporcionar un endpoint donde poder loguear un usuario.
+Al realizar el login, la api nos retornará un access token.
+
+
+### Crear un servicio de autenticación
+Creamos un servicio de autenticación que nos permita realizar el login y obtener el access token.
+
+```ts
+
+
+
+
