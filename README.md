@@ -235,5 +235,63 @@ export class ProductsService {
 
 ### Manejo de errores
 
+El manejo de errores puede realizarse de la siguiente forma:
 
 
+Mensajes de errores provenientes del backend
+
+```ts
+  onShowDetail(id: string) {
+    this.statusDetail = 'loading';
+    this.toggleProductDetail();
+    this.productsService.getProductById(id).subscribe((data) => {
+      this.productChosen = data;
+      this.statusDetail = 'success';
+    }, response => {
+      //Esta estructura me permite visualizar el manejo de errores que venga del backend.
+      console.log(response.error.message);
+      this.statusDetail = 'error';
+    });
+  }
+  ```
+
+Manejo de errores desde el servicio
+
+
+```ts
+  getProductById(id: string) {
+    return this.http
+      .get<Product>(`${this.apiUrl}/${id}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if(error.status === HttpStatusCode.Conflict) {
+          //return throwError('Algo está fallando en el componente'); //Usado en el curso pero deprecado
+          return throwError(() => new Error('Algo está fallando en el componente'));
+        }
+        if(error.status === HttpStatusCode.NotFound) {
+          return throwError(() => new Error('El producto no existe'));
+        }
+        if(error.status === HttpStatusCode.Unauthorized) {
+          return throwError(() => new Error('No estás autorizado'));
+        }
+        return throwError(() => new Error('Algo salió mal'));
+      }));
+  }
+  ```
+
+En lo anterior, podemos observar que Angular nos da diferentes herramientas para manejar los errores.
+Por ejemplo:
+
+- throwError : Nos permite personalizar el mensaje del error.
+- HttpErrorResponse : Nos permite acceder a la información del error que viene del backend, como por ejemplo el status. Y se utiliza para tipar el error.
+- HttpStatusCode : Nos proporciona ayuda con los códigos de los estados.
+
+Una vez que el servicio es quien maneja el error, podemos recibirlo en el componente para que lo envíe a la vista.
+
+```ts
+    }, errorMsg => {
+      //Esta estructura me permite visualizar el manejo de errores que venga del backend.
+      //console.log(response.error.message);
+      window.alert(errorMsg)
+      this.statusDetail = 'error';
+    });
+  ```

@@ -1,9 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { retry } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import {
+  HttpClient,
+  HttpParams,
+  HttpErrorResponse,
+  HttpStatusCode
+} from '@angular/common/http';
+import { retry, catchError } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
 
-import { CreateProductDTO, UpdateProductDTO, Product } from '../models/product.model';
+import {
+  CreateProductDTO,
+  UpdateProductDTO,
+  Product,
+} from '../models/product.model';
 import { environment } from './../../environments/environment';
 
 @Injectable({
@@ -15,30 +24,40 @@ export class ProductsService {
 
   constructor(private http: HttpClient) {}
 
-/*   getAllProducts() {
+  /*   getAllProducts() {
     return this.http.get<Product[]>(this.apiUrl);
   } */
 
   //Los parámetros son opcionales
   getAllProducts(limit?: number, offset?: number) {
     let params = new HttpParams();
-    if(limit && offset) {
+    if (limit && offset) {
       params = params.set('limit', limit);
       params = params.set('offset', offset);
     }
-    return this.http.get<Product[]>(this.apiUrl, { params })
-    .pipe(
-      retry(3)
-    );
+    return this.http.get<Product[]>(this.apiUrl, { params }).pipe(retry(3));
   }
 
   getProductById(id: string) {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+    return this.http
+      .get<Product>(`${this.apiUrl}/${id}`)
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if(error.status === HttpStatusCode.Conflict) {
+          return throwError(() => new Error('Algo está fallando en el componente'));
+        }
+        if(error.status === HttpStatusCode.NotFound) {
+          return throwError(() => new Error('El producto no existe'));
+        }
+        if(error.status === HttpStatusCode.Unauthorized) {
+          return throwError(() => new Error('No estás autorizado'));
+        }
+        return throwError(() => new Error('Algo salió mal'));
+      }));
   }
 
-  getProductByPage(limit: number, offset: number){
+  getProductByPage(limit: number, offset: number) {
     return this.http.get<Product[]>(`${this.apiUrl}`, {
-      params: {limit, offset}
+      params: { limit, offset },
     });
   }
 
@@ -48,16 +67,15 @@ export class ProductsService {
 
   updateProduct(id: string, changes: UpdateProductDTO): Observable<Product> {
     console.log('id', id);
-    console.log('changes ', changes)
+    console.log('changes ', changes);
     return this.http.put<Product>(`${this.apiUrl}/${id}`, changes);
   }
 
-/*   updateProduct(id: string, changes: Partial<Product>) {
+  /*   updateProduct(id: string, changes: Partial<Product>) {
     return this.http.patc<Product>(`${this.apiUrl}/${id}`, changes);
   } */
 
   deleteProduct(id: string) {
     return this.http.delete<boolean>(`${this.apiUrl}/${id}`);
   }
-
 }

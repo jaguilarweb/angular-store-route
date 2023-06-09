@@ -56,9 +56,10 @@ export class ProductsComponent implements OnInit {
     this.productsService.getProductById(id).subscribe((data) => {
       this.productChosen = data;
       this.statusDetail = 'success';
-    }, response => {
+    }, errorMsg => {
       //Esta estructura me permite visualizar el manejo de errores que venga del backend.
-      console.log(response.error.message);
+      //console.log(response.error.message);
+      window.alert(errorMsg)
       this.statusDetail = 'error';
     });
   }
