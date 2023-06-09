@@ -362,3 +362,111 @@ Tenemos diferentes maneras de enfrentar esta situación:
 
 Importante fijarse que metodo se está llamando en el ngInit del componente.
 También importante es incorporar el return cada vez que se abre un scope del método 'map' para los array.
+
+### Avoid callback hell
+Cuando se trabaja con callbacks, se puede llegar a tener un código muy anidado, lo que se conoce como callback hell.
+
+Ejemplo:
+
+```ts
+  readAndUpdate(id: string) {
+    this.productsService.getProductById(id)
+    .subscribe(data => {
+      const product = data;
+      this.productsService.updateProduct(product.id, { title: 'change' })
+      .subscribe(rtaUpdated => {
+        console.log(rtaUpdated);
+      })
+    })
+  }
+  ```
+
+En el codigo anterior tenemos un subscribe anidado, y esto podría continuar concatenando subscribes.
+
+Cuando utilizamos promesas las manejamos con los then, ejemplo:
+
+```ts
+  readAndUpdate(id: string) {
+    this.productsService.getProductById(id)
+    .then(data => {
+      const product = data;
+      this.productsService.updateProduct(product.id, { title: 'change' })
+      .then(rtaUpdated => {
+        console.log(rtaUpdated);
+      })
+    })
+  }
+  ```
+
+No obstante, con los observadores en el caso de tener que recibir un request tras otro podemos utilizar la funcionalidad switchMap de la librería 'rxjs':
+
+```ts
+  readAndUpdate(id: string) {
+    this.productsService.getProductById(id)
+    .pipe(
+      switchMap((product) => this.productsService.updateProduct(product.id, { title: 'primer request dependiendo del siguiente' })),
+      switchMap((product) => this.productsService.updateProduct(product.id, { title: 'segundo, dependiendo del siguiente' })),
+      switchMap((product) => this.productsService.updateProduct(product.id, { title: 'tercero, del que depende el anterior' })),
+    )
+    .subscribe(data => {
+      console.log(data);
+    });
+  }
+  ```
+
+Cuando requiero ejecutar mas de una petición, que no son dependendientes una de otra, pero que necesito ejecutarlas todas juntas trngo las siguientes alternativas:
+
+Si utilizo promesas puedo utilizar el Promise.all:
+
+```ts
+  readAndUpdate(id: string) {
+    Promise.all([
+      this.productsService.getProductById(id),
+      this.productsService.getProductById(id),
+      this.productsService.getProductById(id),
+    ])
+    .then(data => {
+      console.log(data);
+    })
+  }
+  ```
+
+Si utilizo observables puedo utilizar el zip de 'rxjs':
+  
+  ```ts
+  readAndUpdate(id: string) {
+    this.productsService.getProductById(id)
+    .pipe(
+      switchMap((product) => this.productsService.updateProduct(product.id, { title: 'change' })),
+    )
+    .subscribe(data => {
+      console.log(data);
+    });
+    zip(
+      this.productsService.getProductById(id),
+      this.productsService.updateProduct(id, {title: 'nuevo'})
+    )
+    .subscribe(response => {
+      const product = response[0]; //Response 0 sería la primera petición realizada (getProductById) definido por la posición en que se hizo
+      const update = response[1]; //Response 1 sería la primera petición realizada (upadteProduct) definido por la posición en que se hizo
+    })
+  }
+  ```
+
+
+Si utilizo observables puedo utilizar el forkJoin:
+  
+  ```ts
+    readAndUpdate(id: string) {
+      forkJoin([
+        this.productsService.getProductById(id),
+        this.productsService.getProductById(id),
+        this.productsService.getProductById(id),
+      ])
+      .subscribe(data => {
+        console.log(data);
+      })
+    }
+  ```
+
+

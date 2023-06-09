@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { zip } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { CreateProductDTO, Product, UpdateProductDTO } from 'src/app/models/product.model';
 import { StoreService } from 'src/app/services/store.service';
@@ -64,6 +66,26 @@ export class ProductsComponent implements OnInit {
       window.alert(errorMsg)
       this.statusDetail = 'error';
     });
+  }
+
+  // Obtener un producto y actualizarlo consecutivamente
+  // Usando switchmap
+  readAndUpdate(id: string) {
+    this.productsService.getProductById(id)
+    .pipe(
+      switchMap((product) => this.productsService.updateProduct(product.id, { title: 'change' })),
+    )
+    .subscribe(data => {
+      console.log(data);
+    });
+    zip(
+      this.productsService.getProductById(id),
+      this.productsService.updateProduct(id, {title: 'nuevo'})
+    )
+    .subscribe(response => {
+      const product = response[0]; //Response 0 sería la primera petición realizada (getProductById) definido por la posición en que se hizo
+      const update = response[1]; //Response 1 sería la primera petición realizada (upadteProduct) definido por la posición en que se hizo
+    })
   }
 
   onAddProduct() {
