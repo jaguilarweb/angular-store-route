@@ -505,6 +505,37 @@ Al realizar el login, la api nos retornará un access token.
 Creamos un servicio de autenticación que nos permita realizar el login y obtener el access token.
 
 ```ts
+export class AuthService {
+  private apiUrl = `${environment.API_URL}/api/auth`;
+
+  constructor(private http: HttpClient) {}
+
+  login(email: string, password: string) {
+    return this.http.post<Auth>(`${this.apiUrl}/login`, {email, password});
+  }
+
+  profile(email: string, password: string) {
+    return this.http.get(`${this.apiUrl}/profile`);
+  }
+}
+```
+
+Luego desde el controlador invocaremos al servicio de autenticación para acceder al metodo de login, que nos retornará un access token.
+
+```ts
+  login() {
+    this.authService.login('sebas@gmail.com', '1222')
+    .subscribe(rta => {
+      console.log(rta.access_token);
+    })
+  }
+```
+
+ y lo haremos accesible mediante un botón desde la vista
+
+```html
+<button (click)="login()">Login</button>
+```
 
 
 
