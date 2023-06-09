@@ -6,7 +6,7 @@ import {
   HttpStatusCode,
 } from '@angular/common/http';
 import { retry, catchError, map } from 'rxjs/operators';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, zip } from 'rxjs';
 
 import {
   CreateProductDTO,
@@ -46,6 +46,17 @@ export class ProductsService {
         });
       })
     );
+  }
+
+  fetchReadAndUpdate(id: string, dto:UpdateProductDTO){
+    return zip(
+      this.getProductById(id),
+      this.updateProduct(id, dto)
+    )
+    .subscribe( response => {
+      const read = response[0];
+      const update = response[1];
+    })
   }
 
   getProductById(id: string) {

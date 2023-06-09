@@ -469,4 +469,27 @@ Si utilizo observables puedo utilizar el forkJoin:
     }
   ```
 
+Si bien hemos elaborado toda esta lógica en el componente, lo recomendado es hacerla en el servicio para que se pueda reutilizar el código.
 
+Por tanto, en el servicio creamos la función fetchReadUpdated usando zip:
+  
+  ```ts
+  fetchReadAndUpdate(id: string, dto:UpdateProductDTO){
+    return zip(
+      this.getProductById(id),
+      this.updateProduct(id, dto)
+    )
+    .subscribe( response => {
+      const read = response[0];
+      const update = response[1];
+    })
+  }
+  ```
+
+Y luego el componente realiza el siguiente ajuste:
+
+```ts
+  readAndUpdate(id: string) {
+    this.productsService.fetchReadAndUpdate(id, {title: 'nuevo'});
+  }
+  ```

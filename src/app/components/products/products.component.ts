@@ -73,18 +73,15 @@ export class ProductsComponent implements OnInit {
   readAndUpdate(id: string) {
     this.productsService.getProductById(id)
     .pipe(
-      switchMap((product) => this.productsService.updateProduct(product.id, { title: 'change' })),
+      switchMap((product) => this.productsService.updateProduct(product.id, {title: 'change'})),
     )
     .subscribe(data => {
       console.log(data);
-    });
-    zip(
-      this.productsService.getProductById(id),
-      this.productsService.updateProduct(id, {title: 'nuevo'})
-    )
-    .subscribe(response => {
-      const product = response[0]; //Response 0 sería la primera petición realizada (getProductById) definido por la posición en que se hizo
-      const update = response[1]; //Response 1 sería la primera petición realizada (upadteProduct) definido por la posición en que se hizo
+    })
+    this.productsService.fetchReadAndUpdate(id, {title: 'change'})
+    .subscribe((response: any) => {
+      const read = response[0];
+      const update = response[1];
     })
   }
 
