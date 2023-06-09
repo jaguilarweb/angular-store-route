@@ -8,7 +8,18 @@ import { Product } from '../../models/product.model';
   styleUrls: ['./product.component.scss']
 })
 export class ProductComponent implements OnInit {
-  @Input() product!: Product;
+  /* @Input() product!: Product; */
+  @Input() product: Product = {
+    id: '',
+    price: 0,
+    images: [],
+    title: '',
+    category: {
+      id: '',
+      name: '',
+    },
+    description: '',
+  };
   @Output() addedProduct = new EventEmitter<Product>();
   @Output() showDetail = new EventEmitter<string>();
 

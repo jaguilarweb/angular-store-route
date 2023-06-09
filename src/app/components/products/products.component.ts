@@ -32,13 +32,15 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     //Petición async
-/*     this.productsService.getAllProducts().subscribe((data) => {
-      this.products = data;
-    }); */
-    this.productsService.getProductByPage(10, 0).subscribe((data) => {
+    this.productsService.getAllProducts(this.limit, this.offset).subscribe((data) => {
+      console.log(data)
       this.products = data;
       this.offset += this.limit;
     });
+/*     this.productsService.getProductByPage(10, 0).subscribe((data) => {
+      this.products = data;
+      this.offset += this.limit;
+    }); */
   }
 
   onAddToShoppingCart(product: Product) {

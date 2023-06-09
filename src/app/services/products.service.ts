@@ -3,9 +3,9 @@ import {
   HttpClient,
   HttpParams,
   HttpErrorResponse,
-  HttpStatusCode
+  HttpStatusCode,
 } from '@angular/common/http';
-import { retry, catchError } from 'rxjs/operators';
+import { retry, catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
 import {
@@ -35,24 +35,36 @@ export class ProductsService {
       params = params.set('limit', limit);
       params = params.set('offset', offset);
     }
-    return this.http.get<Product[]>(this.apiUrl, { params }).pipe(retry(3));
+    return this.http.get<Product[]>(this.apiUrl, { params }).pipe(
+      retry(3),
+      map((products) => {
+        return products.map((item) => {
+          return {
+            ...item,
+            taxes: 0.19 * item.price,
+          };
+        });
+      })
+    );
   }
 
   getProductById(id: string) {
-    return this.http
-      .get<Product>(`${this.apiUrl}/${id}`)
-      .pipe(catchError((error: HttpErrorResponse) => {
-        if(error.status === HttpStatusCode.Conflict) {
-          return throwError(() => new Error('Algo está fallando en el componente'));
+    return this.http.get<Product>(`${this.apiUrl}/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === HttpStatusCode.Conflict) {
+          return throwError(
+            () => new Error('Algo está fallando en el componente')
+          );
         }
-        if(error.status === HttpStatusCode.NotFound) {
+        if (error.status === HttpStatusCode.NotFound) {
           return throwError(() => new Error('El producto no existe'));
         }
-        if(error.status === HttpStatusCode.Unauthorized) {
+        if (error.status === HttpStatusCode.Unauthorized) {
           return throwError(() => new Error('No estás autorizado'));
         }
         return throwError(() => new Error('Algo salió mal'));
-      }));
+      })
+    );
   }
 
   getProductByPage(limit: number, offset: number) {

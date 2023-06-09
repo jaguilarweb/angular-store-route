@@ -9,7 +9,11 @@ export interface Product {
   images: string[];
   description: string;
   category: Category;
+  taxes?: number;
 }
+
+//nuevo atributo taxes, opcional, no va a ser enviado desde el backend,
+//sino que será calculado desde el frontend.
 
 export interface CreateProductDTO extends Omit<Product, 'id' | 'category'> {
   categoryId: number;

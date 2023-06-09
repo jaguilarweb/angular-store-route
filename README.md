@@ -295,3 +295,70 @@ Una vez que el servicio es quien maneja el error, podemos recibirlo en el compon
       this.statusDetail = 'error';
     });
   ```
+
+### Transformar peticiones
+
+En este caso vamos a incorporar un atributo nuevo al modelo de productos, el atributo 'taxes' el cual va a ser opcional.
+El valor de este atributo no será proporcionado por el backend sino que será calculado por el frontend.
+
+Esta incorporación la haremos desde el servicio:
+
+```ts
+  getAllProducts(limit?: number, offset?: number) {
+    let params = new HttpParams();
+    if (limit && offset) {
+      params = params.set('limit', limit);
+      params = params.set('offset', offset);
+    }
+    return this.http.get<Product[]>(this.apiUrl, { params }).pipe(retry(3), map(products => products.map(item => {
+      return {
+        ...item,
+        taxes: .19 * item.price
+      }
+    })));
+```
+
+Luego debemos asegurarnos de que no se genere un conflicto en la vista, ya que al tener el atributo un valor optativo podría asumir el valor null o undefined y por tanto no podemos imprimir directamente el valor como lo hicimos con los otros atributos:
+
+```html
+<p>{{ product.taxes }}</p>
+```
+
+Tenemos diferentes maneras de enfrentar esta situación:
+
+- Utilizar el operador Elvis ( ? ) para que imprima el valor solo si existe.
+
+```html
+<p>{{ product.taxes ? product.taxes : 'No tiene impuestos' }}</p>
+```
+- Utilizar el operador (?) como lo muestra el curso. El problema con este es que la consola muestra un warning que puede extenderse al navegador una vez en producción
+  
+  ```html
+  <p>{{ product?.taxes}}</p>
+  ```
+
+- Utilizar el operador ngIf para que imprima el valor solo si existe.
+  
+  ```html
+  <p *ngIf="product.taxes">{{ product.taxes }}</p>
+  ```
+
+- Utilizar el operador ngIf para que imprima el valor solo si existe, pero en lugar de imprimir el valor, imprimir un mensaje.
+  
+  ```html
+  <p *ngIf="product.taxes; else noTaxes"> {{ product.taxes }}</p>
+  <ng-template #noTaxes>
+    <p>No tiene impuestos</p>
+  </ng-template>
+  ```
+
+- Utilizar doble signo de interrogación (??) para que imprima el valor solo si existe, pero en lugar de imprimir el valor, imprimir un mensaje o un valor vacio.
+  
+  ```html
+  <p>{{ product.taxes ?? 'No tiene impuestos' }}</p>
+  o
+  <p>{{ product.taxes ?? '' }}</p>
+  ```
+
+Importante fijarse que metodo se está llamando en el ngInit del componente.
+También importante es incorporar el return cada vez que se abre un scope del método 'map' para los array.
