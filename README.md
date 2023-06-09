@@ -537,6 +537,75 @@ Luego desde el controlador invocaremos al servicio de autenticación para accede
 <button (click)="login()">Login</button>
 ```
 
+### Headers
+
+Para enviar el token tenemos diferentes formas de enviarlo mediante los headers:
+
+- Enviar el token en el header de la petición
+
+```ts
+  profile(token: string) {
+    return this.http.get<User>(`${this.apiUrl}/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // 'Content-type': 'application/json' //optativo
+      },
+      ```
+
+- Otra forma es utilizando HttpHeaders, para hacerlo de forma dinámica. Especialmente útil si se requiere incorporar una condición.
+  
+  ```ts
+    profile(token: string) {
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+        // 'Content-type': 'application/json' //optativo
+      });
+      return this.http.get<User>(`${this.apiUrl}/profile`, { headers });
+    }
+  ```
+  ó
+  ```ts
+    profile(token: string) {
+    const headers = new HttpHeaders();
+    headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<User>(`${this.apiUrl}/profile`, {
+      headers
+    });
+  ```
+
+Respuestas de la IA:
+- Enviar el token en el body de la petición
+  
+  ```ts
+    profile(token: string) {
+      return this.http.get<User>(`${this.apiUrl}/profile`, {
+        body: {
+          token
+        },
+        ```
+
+
+Para enviar el token en el header de la petición, debemos modificar el servicio de autenticación:
+
+```ts
+  login(email: string, password: string) {
+    return this.http.post<Auth>(`${this.apiUrl}/login`, {email, password})
+    .pipe(tap((data: Auth) => {
+      localStorage.setItem('token', data.access_token);
+    }));
+  }
+```
+
+Luego desde el componente:
+
+```ts
+  getProfile(){
+    this.authService.profile(this.token)
+    .subscribe((profile) => {
+      console.log(profile);
+    })
+  }
+  ```
 
 
 
