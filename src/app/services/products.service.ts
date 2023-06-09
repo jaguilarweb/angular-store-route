@@ -11,6 +11,7 @@ import { environment } from './../../environments/environment';
 })
 export class ProductsService {
   private apiUrl = `${environment.API_URL}/api/products`;
+  /* private apiUrl = `https://young-sands-07814.herokuapp.com/api/products`; */
 
   constructor(private http: HttpClient) {}
 

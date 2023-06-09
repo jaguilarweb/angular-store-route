@@ -233,3 +233,7 @@ export class ProductsService {
 ```
 
 
+### Manejo de errores
+
+
+

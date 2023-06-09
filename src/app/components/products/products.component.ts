@@ -20,6 +20,8 @@ export class ProductsComponent implements OnInit {
   limit = 10;
   offset=0;
 
+  statusDetail: 'loading' | 'success' | 'error' | 'init' = 'init';
+
   constructor(
     private storeService: StoreService,
     private productsService: ProductsService
@@ -49,10 +51,15 @@ export class ProductsComponent implements OnInit {
   }
 
   onShowDetail(id: string) {
+    this.statusDetail = 'loading';
+    this.toggleProductDetail();
     this.productsService.getProductById(id).subscribe((data) => {
-      console.log('detail ', data);
-      this.toggleProductDetail();
       this.productChosen = data;
+      this.statusDetail = 'success';
+    }, response => {
+      //Esta estructura me permite visualizar el manejo de errores que venga del backend.
+      console.log(response.error.message);
+      this.statusDetail = 'error';
     });
   }
 
