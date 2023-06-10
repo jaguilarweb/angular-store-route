@@ -550,7 +550,7 @@ Para enviar el token tenemos diferentes formas de enviarlo mediante los headers:
         Authorization: `Bearer ${token}`,
         // 'Content-type': 'application/json' //optativo
       },
-      ```
+  ```
 
 - Otra forma es utilizando HttpHeaders, para hacerlo de forma dinámica. Especialmente útil si se requiere incorporar una condición.
   
@@ -607,5 +607,30 @@ Luego desde el componente:
   }
   ```
 
+### Interceptor
+
+Para no tener que estar enviando el token en cada petición, podemos utilizar un interceptor que se encargue de enviar el token en cada petición.
+
+Los interceptores, van a estar en medio de cada solicitud, interceptando y agregando alguna funcionalidad.
+
+Para crear un interceptor, ejecutamos el siguiente comando:
+
+```bash
+ng g interceptor interceptors/time --flat
+```
+
+Esto nos creará un archivo en el directorio interceptors llamado time.interceptor.ts
+
+Para incorporarlo a la aplicación debemos agregarlo manualmente en el app.module.ts dado que tiene una configuración diferente a otros injectables:
+
+```ts
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TimeInterceptor,
+      multi: true
+    }
+  ],
+```
 
 
