@@ -633,4 +633,182 @@ Para incorporarlo a la aplicación debemos agregarlo manualmente en el app.modul
   ],
 ```
 
+Finalmente, para el ejemplo anterior, veremos en consola que todas las peticiones que realicemos incorporarán el tiempo que han demorado.
+
+Ahora esta funcionalidad la incorporaremos para el manejo de los tokens, ya que en el ambiente de producción lo usual es que todas las peticiones viajen con un token agregado a los headers.
+
+#### Almacenamiento de tokens
+
+Tipos de almacenamiento:
+- In memory storage
+- Local Storage
+- Session Storage
+- Cookies
+
+
+##### In Memory
+Hasta este punto, hemos guardado el token en memoria.
+
+Ejemplo, en el componente nav:
+
+```ts
+export class NavComponent implements OnInit {
+  token = '';
+  profile: User | null = null;
+}
+```
+
+Esto significa que si el usuario se llega a salir de la aplicación o recarga, ya perdería el token y ya no estaría logueado.
+
+##### LocalStorage o SessionStorage
+Estos storage son los que trae el navegador por defecto.
+Entre ambos, mejor opción es localstorage ya que mantendrá el valor del token hasta que el usuario cirre sesón, a diferencia del SessionStorage que perderá el token si cerramos el tab y el navegador.
+
+##### Cookie storage
+
+Esta es otra capa, que tiene persistencia y tiene mas seguridad que el LocalStorage.
+
+Para implementar el manejo del token implementaremos el token service, y podremos guardar de diferentes formas el token:
+
+En localStorage:
+
+```ts
+  saveToken(token: string) {
+    localStorage.setItem('token', token);
+    }
+  ```
+
+En SessionStorage:
+  
+  ```ts
+    saveToken(token: string) {
+      sessionStorage.setItem('token', token);
+      }
+    ```
+
+En Cookies:
+  
+  ```ts
+    saveToken(token: string) {
+      document.cookie = `token=${token}`;
+    }
+  ```
+
+Para obtener el token desde el local storage
+
+```ts
+  getToken() {
+    return localStorage.getItem('token');
+  }
+  ```
+
+Para obtener el token desde el session storage
+  ```ts
+  getToken() {
+    return sessionStorage.getItem('token');
+  }
+  ```
+
+Para obtener el token desde el cookie storage
+  ```ts
+  getToken() {
+    return document.cookie;
+  }
+  ```
+
+Para eliminar el token desde el local storage
+
+  ```ts
+    removeToken() {
+      localStorage.removeItem('token');
+    }
+  ```
+
+Para eliminar el token desde el session storage
+
+  ```ts
+    removeToken() {
+      sessionStorage.removeItem('token');
+    }
+  ```
+
+Para eliminar el token desde el cookie storage
+  
+  ```ts
+    removeToken() {
+      document.cookie = 'token=';
+    }
+  ```
+
+Ahora, vamos a guardar el token de forma automática cuando hagamos el login. Es decir, no vamos a esperar recibirlo en nuestros componentes.
+
+Para lo anterior creamos un token interceptor:
+
+```bash
+ng g interceptor interceptors/token --flat
+```
+
+Y lo configuramos en el app.module.ts:
+
+```ts
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
+  ],
+```
+
+Ahora el interceptor agregará el token a las peticiones cuando este (el token), exista. 
+Para lo anterior clonará la petición.
+Si no exite el token, dejará pasar la petición original.
+
+```ts
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    request = this.addToken(request);
+    return next.handle(request);
+  }
+
+  private addToken(request: HttpRequest<unknown>){
+    const token = this.tokenService.getToken();
+    if(token){
+      const authReq = request.clone({
+        headers: request.headers.set('Authorization', `Bearer ${token}`)
+      });
+      return authReq;
+    }
+    return request;
+  }
+  ```
+
+Y ahora implementamos la nueva lógica en el servicio de auth y en el nav component, pues antes el token se agregaba manual.
+
+En el servicio de token:
+
+```ts
+  saveToken(token: string) {
+    console.log('Save' + token);
+    localStorage.setItem('token', token);
+    }
+
+  getToken() {
+    return localStorage.getItem('token');
+  }
+  ```
+
+En el nav component, eliminamos todos los metodos anteriores.
+  
+  ```ts
+  login() {
+    this.authService.loginAndGet('sebas@mail.com', '1212')
+    .subscribe(user => {
+      this.profile = user;
+    });
+  }
+  ```
+
+
+
+
 
