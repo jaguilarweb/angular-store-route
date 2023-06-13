@@ -893,9 +893,15 @@ Al hacerlo de la primera manera, es decir definido inicialmente como false, solo
 
 ### Descarga y Carga de archivos con Http
 
+Comunmente nos encontramos que los formularios suele suelen tener la utilidad de carga de un archivo. Un PDF, una foto, etc. Cuando requieres de este tipo de Inputs, tienes que considerar que este archivo está compuesto por datos binarios que tienes que enviar al servidor.
+
+Guardado de archivos binarios en un servidor
+En las API REST, el envío de información se realiza en formato JSON con el header Content-type: application/json. No obstante, el envío de archivos binarios, utiliza el header Content-type: multipart/form-data.
+
+
 #### Descarga de archivos Http
 
-Para realizar la descarga de archivo, podemos utilizar una funcionalidad de html nativo (no de angular) y que es un atributo que agregamos a al elemento 'a':
+Para realizar la descarga de archivo, podemos utilizar una funcionalidad de los navegadores en html nativo (no de angular) y que es un atributo que agregamos a al elemento 'a':
 
 ```html
 <a href="./assets/files/texto.txt" download >Descarga</a>
@@ -911,7 +917,7 @@ Vamos a crear un servicio para realizar esta funcionalidad:
 ng g s services/files
 ```
 
-Adicionalmente, vamoa a utilizar una dependencia de tercero llamada file-saver y el tipado:
+Adicionalmente, vamos a utilizar una dependencia de tercero llamada file-saver y el tipado:
 
 ```bash
 npm install file-saver
@@ -919,5 +925,82 @@ npm install @types/file-saver --save-dev
 
 ```
 
+En el servicio creamos el método para descargar los archivos:
 
-Para descargar archivos, debemos utilizar el tipo de dato Blob, que es un tipo de dato binario.
+```ts
+  getFile(name:string, url: string, type: string) {
+    return this.http.get(url, {responseType: 'blob'})
+    .pipe(
+      tap(content => {
+        const blob = new Blob([content], {type: type});
+        saveAs(blob, name); //Este método es importado desde la libreria file-saver
+      }),
+      map(() => true)
+    );
+  }
+
+  ```
+
+En el componente, para descargar programáticamente el archivo definimos el siguiente método:
+
+```ts
+  downloadPdf(){
+    this.filesService.getFile('my.pdf', 'https://young-sands-07814.herokuapp.com/api/files/dummy.pdf', 'application/pdf')
+/*     this.filesService.getFile('my.pdf', './../assets/files/texto.txt', 'application/txt') */
+    .subscribe()
+  }
+  ```
+
+POdemos descargar desde el propio servidor, como de un servidor externo.
+Deberemos especificar el formato del archivo en el 3er argumento.
+
+En la vista, agregamos un botón para descargar el archivo:
+
+```html
+<button (click)="downloadPdf()">Descargar PDF</button>
+```
+
+
+
+#### Carga de archivos Http
+
+En el servicio para archivos creamos el método para cargar los archivos:
+
+```ts
+  uploadFile(file: Blob){
+    const dto = new FormData();
+    dto.append('file', file);
+    return this.http.post<File>(`${this.apiUrl}/upload`, dto, {
+      //Dependiendo del backend podría ser necesario incluir headears. Ejm:
+      /* headers: {
+        'Content-type' : 'multipart/form-data'
+      } */
+    })
+  }
+  ```
+
+En el componente:
+
+```ts
+
+  onUpload(event: Event){
+    const element = event.target as HTMLInputElement;
+    const file = element.files?.item(0);
+    if(file) {
+      this.filesService.uploadFile(file)
+      .subscribe( rta => {
+        this.imgRta = rta.location
+      });
+    }
+  }
+  ```
+
+Y en la vista:
+
+```html
+<p>
+  <input type="file" (change)="onUpload($event)">
+  <img *ngIf="imgRta" [src]="imgRta">
+</p>
+  ```
+
