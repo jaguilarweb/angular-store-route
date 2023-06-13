@@ -889,3 +889,35 @@ export function checkTime(){
 ```
 
 Al hacerlo de la primera manera, es decir definido inicialmente como false, solo enviaremos el contexto en la funciones definidas en los servicios donde queremos que se incluya el contexto. En este caso la incluimos en getAllProducts, por tanto, solo ese método invocará el contexto y para este caso se traducirá que solo ese método medirá la velocidad de la petición.
+
+
+### Descarga y Carga de archivos con Http
+
+#### Descarga de archivos Http
+
+Para realizar la descarga de archivo, podemos utilizar una funcionalidad de html nativo (no de angular) y que es un atributo que agregamos a al elemento 'a':
+
+```html
+<a href="./assets/files/texto.txt" download >Descarga</a>
+```
+
+No obstante, hay ocasiones en que no podemos utilizar esta opción.
+Por ejemplo, cuando queremos descargar un archivo que se encuentra en un servidor externo, o cuando queremos descargar un archivo que se genera dinámicamente.
+En estos casos, podemos utilizar el servicio Http para descargar el archivo.
+
+Vamos a crear un servicio para realizar esta funcionalidad:
+
+```bash
+ng g s services/files
+```
+
+Adicionalmente, vamoa a utilizar una dependencia de tercero llamada file-saver y el tipado:
+
+```bash
+npm install file-saver
+npm install @types/file-saver --save-dev
+
+```
+
+
+Para descargar archivos, debemos utilizar el tipo de dato Blob, que es un tipo de dato binario.
