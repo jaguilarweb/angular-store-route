@@ -637,6 +637,11 @@ Finalmente, para el ejemplo anterior, veremos en consola que todas las peticione
 
 Ahora esta funcionalidad la incorporaremos para el manejo de los tokens, ya que en el ambiente de producción lo usual es que todas las peticiones viajen con un token agregado a los headers.
 
+**Nota**:
+Durante este apartado veremos 2 interceptores.
+- El interceptor que llamaremos time, se debe ejecutar después de la petición ya que mide el tiempo una vez que esta ya se ha ejecutado.
+- El interceptor que llamaremos token, se debe ejecutar antes de la petición ya que debe agregar el token antes de que la petición se ejecute.
+
 #### Almacenamiento de tokens
 
 Tipos de almacenamiento:
@@ -684,7 +689,7 @@ En SessionStorage:
     saveToken(token: string) {
       sessionStorage.setItem('token', token);
       }
-    ```
+  ```
 
 En Cookies:
   
@@ -808,7 +813,79 @@ En el nav component, eliminamos todos los metodos anteriores.
   }
   ```
 
+#### Contexto
+
+El contexto es la manera en que Angular va a saber si tiene que ejecutar o no un interceptor.
+
+Para lo anterior vamos a importar las siguientes dependencias:
+
+```ts
+import { HttpContext, HttpContextToken } from '@angular/common/http';
+
+```
+
+Luego en el interceptor creamos una variable global y una función para encender o apagar el contexto:
+
+```ts
+const CHECK_TIME = new HttpContextToken<boolean>(() => false);
+
+export function checkTime(){
+  return new HttpContext().set(CHECK_TIME, true);
+}
+```
+
+Incluimos la lógica para evaluar si este contexto se encuentra encendido o apagado:
+
+```ts
+intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if(request.context.get(CHECK_TIME)) {
+      const start = performance.now();
+      return next
+      .handle(request)
+      .pipe(
+        tap(() => {
+          const time = (performance.now() - start) + 'ms';
+          console.log(request.url, time);
+        })
+      );
+    }
+    return next.handle(request);
+  }
+  ```
+
+Y luego debemos incluir en el servicio, en este caso lo haremos en el servicio de product, la acción de encender o apagar dicho contexto:
+
+```ts
+getAllProducts(limit?: number, offset?: number) {
+    let params = new HttpParams();
+    if (limit && offset) {
+      params = params.set('limit', limit);
+      params = params.set('offset', offset);
+    }
+    return this.http.get<Product[]>(this.apiUrl, { params, context: checkTime() }).pipe( //en los parametros enviamos el contexto
+      retry(3),
+      map((products) => {
+        return products.map((item) => {
+          return {
+            ...item,
+            taxes: 0.19 * item.price,
+          };
+        });
+      })
+    );
+  }
+  ```
 
 
+Recordar que si queremos que el contexto esté encendido o no, por defecto, lo debemos establecer cuando definimos la variable global y la función:
 
+```ts
+const CHECK_TIME = new HttpContextToken<boolean>(() => false); // Podria estar en true y estaría encendido por defecto
 
+export function checkTime(){
+  return new HttpContext().set(CHECK_TIME, true); //De estar encendido por defecto acá ponemos false para apagarlo
+}
+
+```
+
+Al hacerlo de la primera manera, es decir definido inicialmente como false, solo enviaremos el contexto en la funciones definidas en los servicios donde queremos que se incluya el contexto. En este caso la incluimos en getAllProducts, por tanto, solo ese método invocará el contexto y para este caso se traducirá que solo ese método medirá la velocidad de la petición.
