@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { zip } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Component, Input } from '@angular/core';
 
 import { CreateProductDTO, Product, UpdateProductDTO } from 'src/app/models/product.model';
 import { StoreService } from 'src/app/services/store.service';
@@ -11,16 +9,12 @@ import { ProductsService } from 'src/app/services/products.service';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent {
   myShoppingCart: Product[] = [];
   total: number = 0;
-  products: Product[] = [];
+  @Input() products: Product[] = [];
   showProductDetail = false;
   productChosen!: Product;
-
-  //Para avanzar por las páginas dinámicamente
-  limit = 10;
-  offset=0;
 
   statusDetail: 'loading' | 'success' | 'error' | 'init' = 'init';
 
@@ -30,19 +24,6 @@ export class ProductsComponent implements OnInit {
   ) {
     //Puede ir acá porque no es es async.
     this.myShoppingCart = this.storeService.getShoppingCart();
-  }
-
-  ngOnInit(): void {
-    //Petición async
-    this.productsService.getAllProducts(this.limit, this.offset).subscribe((data) => {
-      console.log(data)
-      this.products = data;
-      this.offset += this.limit;
-    });
-/*     this.productsService.getProductByPage(10, 0).subscribe((data) => {
-      this.products = data;
-      this.offset += this.limit;
-    }); */
   }
 
   onAddToShoppingCart(product: Product) {
@@ -61,29 +42,10 @@ export class ProductsComponent implements OnInit {
       this.productChosen = data;
       this.statusDetail = 'success';
     }, errorMsg => {
-      //Esta estructura me permite visualizar el manejo de errores que venga del backend.
-      //console.log(response.error.message);
       window.alert(errorMsg)
       this.statusDetail = 'error';
     });
   }
-
-  // Obtener un producto y actualizarlo consecutivamente
-  // Usando switchmap
-/*   readAndUpdate(id: string) {
-    this.productsService.getProductById(id)
-    .pipe(
-      switchMap((product) => this.productsService.updateProduct(product.id, {title: 'change'})),
-    )
-    .subscribe(data => {
-      console.log(data);
-    })
-    this.productsService.fetchReadAndUpdate(id, {title: 'change'})
-    .subscribe((response: any) => {  //Presenta un error
-      const read = response[0];
-      const update = response[1];
-    })
-  } */
 
   onAddProduct() {
     const product: CreateProductDTO = {
@@ -123,11 +85,11 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  loadMore(){
+  /* loadMore(){
     this.productsService.getProductByPage(this.limit, this.offset).subscribe((data) => {
       this.products = this.products.concat(data);
       this.offset += this.limit;
     });
-  }
+  } */
 
 }
