@@ -20,23 +20,28 @@ import { environment } from './../../environments/environment';
   providedIn: 'root',
 })
 export class ProductsService {
-  private apiUrl = `${environment.API_URL}/api/products`;
+  private apiUrl = `${environment.API_URL}/api`;
   /* private apiUrl = `https://young-sands-07814.herokuapp.com/api/products`; */
 
   constructor(private http: HttpClient) {}
 
-  /*   getAllProducts() {
-    return this.http.get<Product[]>(this.apiUrl);
-  } */
+  getByCategory(categoryId:string, limit?: number, offset?: number) {
+    let params = new HttpParams();
+    if (limit && offset != null) {
+      params = params.set('limit', limit);
+      params = params.set('offset', offset);
+    }
+    return this.http.get<Product[]>(`${this.apiUrl}/categories/${categoryId}/products`, { params })
+  }
 
   //Los parámetros son opcionales
   getAllProducts(limit?: number, offset?: number) {
     let params = new HttpParams();
-    if (limit && offset) {
+    if (limit && offset != null) {
       params = params.set('limit', limit);
       params = params.set('offset', offset);
     }
-    return this.http.get<Product[]>(this.apiUrl, { params, context: checkTime() }).pipe(
+    return this.http.get<Product[]>(`${this.apiUrl}/products`, { params, context: checkTime() }).pipe(
       retry(3),
       map((products) => {
         return products.map((item) => {
@@ -61,7 +66,7 @@ export class ProductsService {
   } */
 
   getProductById(id: string) {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<Product>(`${this.apiUrl}/products/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === HttpStatusCode.Conflict) {
           return throwError(
@@ -80,19 +85,19 @@ export class ProductsService {
   }
 
   getProductByPage(limit: number, offset: number) {
-    return this.http.get<Product[]>(`${this.apiUrl}`, {
+    return this.http.get<Product[]>(`${this.apiUrl}/products`, {
       params: { limit, offset },
     });
   }
 
   createProduct(data: CreateProductDTO) {
-    return this.http.post<Product>(this.apiUrl, data);
+    return this.http.post<Product>(`${this.apiUrl}/products`, data);
   }
 
   updateProduct(id: string, changes: UpdateProductDTO): Observable<Product> {
     console.log('id', id);
     console.log('changes ', changes);
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, changes);
+    return this.http.put<Product>(`${this.apiUrl}/products/${id}`, changes);
   }
 
   /*   updateProduct(id: string, changes: Partial<Product>) {
@@ -100,6 +105,6 @@ export class ProductsService {
   } */
 
   deleteProduct(id: string) {
-    return this.http.delete<boolean>(`${this.apiUrl}/${id}`);
+    return this.http.delete<boolean>(`${this.apiUrl}/products/${id}`);
   }
 }

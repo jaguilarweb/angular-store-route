@@ -18,6 +18,9 @@ import {
 export class ImgComponent
   implements OnInit, OnChanges, AfterViewInit, OnDestroy
 {
+
+
+
   @Input() img: string = '';
 
   //Con esta estrategia puedo identificar el input al cual quiero escuchar en caso de cambio:
