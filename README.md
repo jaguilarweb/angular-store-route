@@ -139,3 +139,14 @@ Evitar los subscribe anidados Ejm:
     })
   }
   ```
+
+### RouterLink and RouterActived
+
+Para crear links a las rutas, se utiliza la directiva routerLink, que se puede utilizar en un elemento a, o en un elemento li, por ejemplo:
+
+```html
+<li class="nav-item">
+  <a class="nav-link" routerLink="/home">Home</a>
+</li>
+```
+
