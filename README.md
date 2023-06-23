@@ -150,3 +150,45 @@ Para crear links a las rutas, se utiliza la directiva routerLink, que se puede u
 </li>
 ```
 
+Para agregar clases a los elementos que estén activos, se utiliza la directiva routerLinkActive, que se puede utilizar en un elemento a, o en un elemento li, por ejemplo:
+
+```html
+<li class="nav-item" routerLinkActive="active">
+  <a class="nav-link" routerLink="/home">Home</a>
+</li>
+```
+
+Podemos crear una página y redireccionar al navegador cuando no se encuntra un recurso.
+Para lo anterior debemos crear la ruta en el app-routing:
+
+```ts
+{
+  path: '**',
+  redirectTo: 'not-found'
+},
+```
+
+Y luego, en el componente not-found, podemos agregar un botón para redireccionar a la página de inicio:
+
+```html
+<div class="container">
+  <div class="row">
+    <div class="col-12 text-center">
+      <h1>404</h1>
+      <p>La página que buscas no existe</p>
+      <button class="btn btn-primary" routerLink="/home">Ir a la página de inicio</button>
+    </div>
+  </div>
+</div>
+```
+
+También podemos enrutar hacia el componente nonFound:
+
+```ts
+{
+  path: '**',
+  component: NonFoundComponent
+},
+```
+
+
