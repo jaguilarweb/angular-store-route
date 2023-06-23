@@ -191,4 +191,72 @@ También podemos enrutar hacia el componente nonFound:
 },
 ```
 
+#### Página de detalle de producto
+
+Para crear la página de detalle de producto, se debe crear un componente, por ejemplo:
+
+```ts
+ng g c pages/product-detail
+```
+
+Luego, se debe crear la ruta en el app-routing:
+
+```ts
+{
+  path: 'product/:id',
+  component: ProductDetailComponent
+},
+```
+
+Y luego, en el componente, se debe importar ActivatedRoute, para poder acceder a los parámetros de la ruta.
+
+```ts
+import { ActivatedRoute } from '@angular/router';
+```
+
+Y luego, en el constructor, se debe inyectar el servicio ActivatedRoute
+
+```ts
+constructor(private route: ActivatedRoute) { }
+```
+
+Para acceder a los parámetros de la ruta, se debe utilizar el método params, que devuelve un observable, por lo que se debe suscribir para obtener el valor.
+
+```ts
+  ngOnInit(): void {
+    this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          this.productId = params.get('id');
+          if (this.productId) {
+            return this.productsService.getProductById(this.productId);
+          }
+          return [null];
+        })
+      )
+      .subscribe((data) => {
+        this.product = data;
+      });
+  }
+  ```
+
+Esto nos permite poder compartir el enlace y acceder mediante este al detalle del producto.
+
+Cuando queremos volver 'hacia atrás', podemos incluir un botón que utilice la feature de angular/common llamada 'Location':
+
+```ts
+import { Location } from '@angular/common';
+...
+constructor(private location: Location) { }
+...
+  goBack(): void {
+    this.location.back();
+  }
+```
+
+Y en el html:
+
+```html
+<button class="btn btn-primary" (click)="goBack()">Volver</button>
+```
 
