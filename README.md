@@ -285,3 +285,64 @@ Casos de uso para lo anterior son la creación de:
 
 Esta implementación la haremos en el proyecto para permitir compartir el enlace y que cuando accedamos a él, el producto que esté definido por su id en el parámetro esté desplegado y abierto en nuestro home.
 
+
+### LazyLoading & CodeSplitting
+
+LazyLoading es una técnica que permite cargar los módulos de forma dinámica, es decir, cuando se necesiten.
+Esto ayuda a reducir el tamaño final del bundle ya que no importamos todos los módulos al inicio de la aplicación.
+
+El CodeSplitting es un concepto relacionado al lazyloading, donde se divide el código del proyecto en módulos más pequeños, para que el navegador solo cargue el código que se necesita en
+ese momento.
+
+#### Programación Modular
+
+**Tipos de Módulos en Angular**
+Podemos identificar varios tipos de módulos. El AppModule es el módulo raíz que da inicio a tu aplicación. Existen los Routing Modules para la definición de rutas.
+
+El Shared Module que posee servicios o componentes compartidos por toda la aplicación. El Feature/Domain Module que son módulos propios de tu aplicación.
+
+De esta manera, Angular construye un ecosistema de módulos, pudiendo dividir una APP en N partes para optimizar el rendimiento y mantener un orden en el código fuente para que sea comprensible y escalable.
+
+- Root Module: modulo por defecto de angluar
+- Core Module: son servicios que pueden ser usados en diferentes módulos y componentes recordar que los servicios que se inyecta en el provideIn : ‘root’ se puede usar en cualquier parte (instancia global).
+- Routing Module: son módulos especiales que declaran un enrutamiento de la aplicación
+- Feature Domain Module:son los módulos específicos del negocio
+- Shared Module:Se usan para componentes pipes y directivas que se quieran usar en toda la aplicación
+
+
+Para llevar nuestra aplicación a una estructura modular crearemos la carpeta website e incorporaremos:
+- componentes
+- directivas
+- pages
+- pipes
+
+Revisar que las importaciones estén sin problemas.
+
+Ahora hacemos una modificación del app-routing.
+
+```ts
+const routes: Routes = [
+  /*   { path: '', redirectTo: '/home', pathMatch: 'full' }, */
+  {
+    path: '',
+    component: LayoutComponent,
+    children: [
+      { path: '', redirectTo: '/home', pathMatch: 'full' },
+      { path: 'home', component: HomeComponent },
+      { path: 'category/:id', component: CategoryComponent },
+      { path: 'product/:id', component: ProductDetailComponent },
+      { path: 'my-cart', component: MyCartComponent },
+      { path: 'login', component: LoginComponent },
+      { path: 'register', component: RegisterComponent },
+      { path: 'recovery', component: RecoveryComponent },
+      { path: 'profile', component: ProfileComponent },
+    ],
+  },
+
+  { path: '**', component: NotFoundComponent },
+];
+```
+
+Al configurar que la ruta principal cargue el layout y este tenga hijos, habilitamos la posibilidad que website pueda tener su propio layout, por tanto, tambiñen podremos agregar nuevos módulos que podrán tener su propio layout.
+
+
