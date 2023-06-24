@@ -260,3 +260,28 @@ Y en el html:
 <button class="btn btn-primary" (click)="goBack()">Volver</button>
 ```
 
+### Parametros URl (opcionales)
+
+Estos parametros acompañan a la url, ejemplo de url con 2 parámetros:
+
+http://localhost:4000/products?page=1&limit=5
+
+Los parametros, de esta url son:
+- page : número de página que se quiere mostrar
+- limit : cantidad máxima
+
+Los páramteros en la url son opcionales y sriven para crear:
+
+- Rutas dinámicas
+- Rutas con parámetros opcionales
+- Rutas con parámetros de consulta
+
+Casos de uso para lo anterior son la creación de:
+
+- Paginador
+- Buscadores
+- Búsqueda avanzada
+- Filtros
+
+Esta implementación la haremos en el proyecto para permitir compartir el enlace y que cuando accedamos a él, el producto que esté definido por su id en el parámetro esté desplegado y abierto en nuestro home.
+

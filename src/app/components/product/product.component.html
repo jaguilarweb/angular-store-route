@@ -5,5 +5,6 @@
 <p>{{ product.title }}</p>
 <!-- <p>Taxes: {{ product.taxes ?? 'No tiene impuestos' | currency: 'EUR' }}</p> -->
 <p class="category">{{ product.category.name}}</p>
-<button (click)="onShowDetail()" >Detail</button>
+<!-- <button (click)="onShowDetail()" >Detail</button> -->
+<a routerLink="." [queryParams]="{product: product.id}">Ver detalle</a>
 <button (click)="onAddToCart()" >Add cart</button>

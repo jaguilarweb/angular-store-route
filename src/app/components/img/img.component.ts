@@ -40,15 +40,15 @@ export class ImgComponent
   constructor() {
     //Before render -- once time (one instance each)
     //NO correr funciones Async
-    console.log('constructor', 'imgValue => ', this.img);
+    /* console.log('constructor', 'imgValue => ', this.img); */
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     //Before - during render
     //Función que sí podemos usar pàra evaluar los cambios en inputs -- times
     //Simple changes me permite leer los cambios que se están produciendo en los inputs.
-    console.log('ngOnChanges', 'imgValue => ', changes);
-    console.log('changes ', changes);
+    /* console.log('ngOnChanges', 'imgValue => ', changes); */
+    /* console.log('changes ', changes) */;
     //Para evaluar los cambios en los input tengo 2 vías:
     // Primer método: Mediante un if, ir evaluando uno a uno (esto es recomendable con un input o dos)
     // - if(changes.){}
@@ -63,7 +63,7 @@ export class ImgComponent
     //Sí podemos usar Async - fetch (llamadas a apis)
     //Corre solo una vez, cuando se inicializa el componentes
     //No usar para evaluar cambios en los inputs.
-    console.log('ngOnInit', 'imgValue => ', this.img);
+   /*  console.log('ngOnInit', 'imgValue => ', this.img); */
 /*     this.counterFn = window.setInterval(() => {
       this.counter++;
       console.log('run counter');
@@ -76,12 +76,12 @@ export class ImgComponent
     //Lugar para hacer modificaciones a los elementos programáticamente(y no desde el tempalte),
     //ya que se ejecuta después que los elementos del htm están renderizados.
     //Comunmente usado con las directivas.
-    console.log('ngAfterView');
+    /* console.log('ngAf terView');*/
   }
 
   ngOnDestroy() {
     //delete component
-    console.log('ngOnDestroy');
+    /* console.log('ngOnDestroy'); */
     //Ejemplo de borrar procesos que podrian quedar funcionando aún cuando se haya eliminado el component;
    /*  window.clearInterval(this.counterFn); */
   }
@@ -91,7 +91,7 @@ export class ImgComponent
   }
 
   imgLoaded() {
-    console.log('Log Hijo');
+   /*  console.log('Log Hijo'); */
     //Como en EventEmitter<string>() tipeamos una string
     //En el emit, enviamos una string
     this.loaded.emit(this.img);
