@@ -29,7 +29,7 @@ const routes: Routes = [
       { path: 'profile', component: ProfileComponent },
     ],
   },
-
+  { path: 'cms', loadChildren: () => import('./cms/cms.module').then(m => m.CmsModule) },
   { path: '**', component: NotFoundComponent },
 ];
 

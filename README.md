@@ -343,6 +343,32 @@ const routes: Routes = [
 ];
 ```
 
+Rutas anidadas
+
 Al configurar que la ruta principal cargue el layout y este tenga hijos, habilitamos la posibilidad que website pueda tener su propio layout, por tanto, tambiñen podremos agregar nuevos módulos que podrán tener su propio layout.
 
+Si creamos ahora un módulo de administración llamado cms, podemos crear rutas anidadas y que tenga su propia layout.
+
+En el módulo del CMS, creamos el archivo de rutas en ellas escribimos lo siguiente:
+
+```ts
+const routes: Routes = [
+  {
+    path: '',
+    component: LayoutComponent,
+    children: [
+      { path: '', redirectTo: 'grid', pathMatch: 'full' },
+      { path: 'tasks', component: TasksComponent },
+      { path: 'grid', component: GridComponent },
+    ]
+  }
+];
+```
+
+Ahora en el navegador podemos acceder mediante la siguiente url:
+
+http://localhost:4200/cms/grid
+
+
+Con todo lo anterior, podemos tener un renderizado diferente de los componentes que tienen un layout para el website y otro para el CMS.
 
