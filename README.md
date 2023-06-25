@@ -372,3 +372,8 @@ http://localhost:4200/cms/grid
 
 Con todo lo anterior, podemos tener un renderizado diferente de los componentes que tienen un layout para el website y otro para el CMS.
 
+
+Transformar website en módulo
+
+- Creamos el módulo
+- transpasamos los componentes que, perteneciendo a website, quedaron incorporados en el app.module
