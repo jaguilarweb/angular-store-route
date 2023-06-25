@@ -377,3 +377,16 @@ Transformar website en módulo
 
 - Creamos el módulo
 - transpasamos los componentes que, perteneciendo a website, quedaron incorporados en el app.module
+
+##### Shared Module
+
+Un módulo compartido se crea como cualquier otro módulo, solo que no tendrá routing.
+
+Dentro de la carpeta Shared, creamos otras carpetas que son frencuentes, como components, pipes y directives.
+
+Luego, cambiamos la ubicación de componentes que van a ser compartidos por la aplicación como por ejemplo, 'img', 'product' y 'products', los cuales incorporamos al interior de 'shared/components'.
+
+Luego. hacemos lo mismo para los pipes y directivas que queremos compartir. Al hacerlo de esta forma podrán ser usados no solo en el módulo website, sino que también en cualquier modulo que lo importe.
+
+En el archivo shared.module.ts, importamos los componentes, pipes y directivas que queremos compartir.
+
