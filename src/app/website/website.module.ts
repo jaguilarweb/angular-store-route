@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SwiperModule } from 'swiper/angular';
 import { RouterModule } from '@angular/router';
-import { QuicklinkModule } from 'ngx-quicklink';
+/* import { QuicklinkModule } from 'ngx-quicklink'; */
 
 import { WebsiteRoutingModule } from './website-routing.module';
 import { SharedModule } from '../shared/shared.module';
@@ -31,7 +31,7 @@ import { LayoutComponent } from './components/layout/layout.component';
   ],
   imports: [
     CommonModule,
-    QuicklinkModule,
+/*     QuicklinkModule, */
     WebsiteRoutingModule,
     SwiperModule,
     SharedModule,

@@ -10,7 +10,7 @@ import { User, CreateUserDTO } from '../models/user.model';
 })
 export class UsersService {
 
-  private apiUrl = `${environment.API_URL}/api/users`;
+  private apiUrl = `${environment.API_URL}/users`;
   constructor(
     private http: HttpClient
   ) { }

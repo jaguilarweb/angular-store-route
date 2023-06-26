@@ -33,7 +33,8 @@ export class AppComponent {
     this.userService.create({
       name: 'Seba',
       email: 'sebas@gmail.com',
-      password: '1222'
+      password: '1222',
+      role:'admin'
     })
     .subscribe(rta => {
       console.log(rta);

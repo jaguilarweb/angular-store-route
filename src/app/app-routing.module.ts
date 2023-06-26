@@ -3,8 +3,8 @@ import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 
 import { NotFoundComponent } from './not-found/not-found.component';
 import { CustomPreloadService } from './services/custom-preload.service';
-import { QuicklinkStrategy } from 'ngx-quicklink';
-
+/* import { QuicklinkStrategy } from 'ngx-quicklink';
+ */
 const routes: Routes = [
   /*   { path: '', redirectTo: '/home', pathMatch: 'full' }, */
 
@@ -25,7 +25,8 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
 /*       preloadingStrategy: PreloadAllModules, */
-      preloadingStrategy: QuicklinkStrategy,
+      /* preloadingStrategy: QuicklinkStrategy,*/
+      preloadingStrategy: CustomPreloadService,
     }),
   ],
   exports: [RouterModule],

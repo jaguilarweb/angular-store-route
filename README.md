@@ -16,8 +16,9 @@ El proyecto corresponde al Frontend de una tienda digital usando Angular.
 - Angular
 - [Api externa](https://young-sands-07814.herokuapp.com/api/products)
 - [Api externa Actualizada](https://fakeapi.platzi.com/en/rest/users)
+- [Api externa Actualizada](https://api.escuelajs.co/api/v1)
 - [imagenes aleatorias](https://placeimg.com/640/480/any)
-- Postman
+- Postman 
 
 ## Creando Rutas
 
@@ -479,5 +480,23 @@ Es decir, agregar al archivo  tsconfig.json:
 
 Resuelto el error, pero no se observa que ejecute la funcionalidad como se espera.
 [Doc Oficial de typescript](https://www.typescriptlang.org/tsconfig#skipLibCheck)
+
+## Guardianes
+
+Los guardianes son servicios que se ejecutan antes de que se cargue una ruta, y permiten validar si el usuario tiene permisos para acceder a la ruta.
+
+Al crear un guardian por la cli nos da estas opciones:
+
+```bash
+? Which interfaces would you like to implement? (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter> to proceed)
+❯◉ CanActivate
+ ◯ CanActivateChild
+ ◯ CanDeactivate
+ ◯ CanLoad
+ ◯ CanMatch
+```
+
+Para este caso, seleccionamos CanActivate.
+
 
 
