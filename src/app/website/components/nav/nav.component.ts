@@ -28,10 +28,14 @@ export class NavComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-/*     this.storeService.myCart$.subscribe(product => {
+    this.storeService.myCart$.subscribe(product => {
       this.counter = product.length;
-    }); */
+    });
     this.getAllCategories();
+    this.authService.user$.subscribe(user => {
+      this.profile = user;
+    }
+    );
   }
 
   toggleMenu(){
@@ -40,8 +44,8 @@ export class NavComponent implements OnInit {
 
   login() {
     this.authService.loginAndGet('admin@mail.com', 'admin123')
-    .subscribe(user => {
-      this.profile = user;
+    .subscribe(() => {
+      this.router.navigate(['/profile']);
     });
   }
 

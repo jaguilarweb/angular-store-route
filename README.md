@@ -498,5 +498,8 @@ Al crear un guardian por la cli nos da estas opciones:
 
 Para este caso, seleccionamos CanActivate.
 
+### Estado del Login
+
+
 
 
