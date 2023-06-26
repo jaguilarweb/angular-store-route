@@ -18,7 +18,14 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: '/home', pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
-      { path: 'category', loadChildren: () => import('./pages/category/category.module').then(m => m.CategoryModule)},
+      {
+        path: 'category',
+        loadChildren: () =>
+          import('./pages/category/category.module').then(
+            (m) => m.CategoryModule
+          ),
+        data: { preload: true }, //Bandera que activa la precarga personalizada de modulos
+      },
       { path: 'product/:id', component: ProductDetailComponent },
       { path: 'my-cart', component: MyCartComponent },
       { path: 'login', component: LoginComponent },
@@ -31,6 +38,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class WebsiteRoutingModule { }
+export class WebsiteRoutingModule {}
