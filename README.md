@@ -407,15 +407,40 @@ Las desventajas de esta técnica:
 
 - Se observa con conexiones lentas ya que al tener que cargar cada módulo, éste pasa por los cuatro estados pudiendo verse demorado este proceso.
 
+##### PreloadAllModules
 Para mejorar la experiencia de usuario podemos utilizar la precarga de módulos en el background, lo que permite cargar los módulos en segundo plano, mientras el usuario navega por la aplicación. Es decir, se van cargando los módulos según se van a necesitar durante los tiempos de inactividad. Esta carga se inicia posterior a la primera carga inicial.
 
 En el app-routing importamos el PreloadAllModules.
 
-La técnica del PreloadAllModules, es beneficiosa para aplicaciones con pocos móduloo ya que se estaria ocupando el hilo principal del navegador.
+La técnica del PreloadAllModules, es beneficiosa para aplicaciones con pocos módulos ya que se estaria ocupando el hilo principal del navegador.
+
+##### Custom preload strategy
 
 Para una estrategia personalizada.
 
-Creamos un servicio.
+Creamos un servicio custom-preload, que para estos efectos identificará las rutas que tengan la bandera preload y a las cuales permitirá que sus módulos sean precargados. De no tener esta bandera, los módulos no serán precargados:
 
+```ts
+  preload(route: Route, load: () => Observable<any>): Observable<any> {
+    //Todas las rutas que tengan la bandera preload se van a precargar
+    if (route.data && route.data['preload']) {
+      return load();
+    }
+    //Los que no la tengan no se precargan
+    return of(null)
+  }
+  ```
 
+En el routing activamos las banderas:
+
+```ts
+  {
+    path: 'cms',
+    loadChildren: () => import('./cms/cms.module').then(m => m.CmsModule)},
+  {
+    path: 'website',
+    loadChildren: () => import('./website/website.module').then(m => m.WebsiteModule),
+    data: { preload: true }
+  },
+  ```
 
