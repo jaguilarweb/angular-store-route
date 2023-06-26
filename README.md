@@ -444,3 +444,40 @@ En el routing activamos las banderas:
   },
   ```
 
+  Estas estrategias no tienen en cuenta el usuario, es decir, decidimos si le vamos a cargar todos o qué módulos al usuario.
+  
+
+##### QuickLink Strategy
+
+Esta estrategia le permite decisión al usuario, pero no es oficial de Angular.
+QuickLink es una librería que permite precargar los módulos que se van a necesitar en la siguiente navegación.
+
+Examina los link que estan en pantalla y precargará los módulos que estén relacionados a dichos links.
+
+Al compilar tuve este error:
+
+```bash
+Error: node_modules/ngx-quicklink/lib/link.directive.d.ts:17:18 - error TS2707: Generic type 'ɵɵDirectiveDeclaration' requires between 6 and 8 type arguments.
+
+17     static ɵdir: i0.ɵɵDirectiveDeclaration<LinkDirective, "[routerLink]", never, { "routerLink": { "alias": "routerLink"; "required": false; }; }, {}, never, never, true, never>;
+```
+
+Para resolvero probé:
+https://stackoverflow.com/questions/74616687/error-ts2707-generic-type-%C9%B5%C9%B5directivedeclaration-requires-between-6-and-8-type
+
+Es decir, agregar al archivo  tsconfig.json:
+
+```json
+{
+    ...
+    complilerOptions: {
+        ...
+        "skipLibCheck": true
+    }
+}
+```
+
+Resuelto el error, pero no se observa que ejecute la funcionalidad como se espera.
+[Doc Oficial de typescript](https://www.typescriptlang.org/tsconfig#skipLibCheck)
+
+
