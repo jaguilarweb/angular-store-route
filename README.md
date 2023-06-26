@@ -390,3 +390,32 @@ Luego. hacemos lo mismo para los pipes y directivas que queremos compartir. Al h
 
 En el archivo shared.module.ts, importamos los componentes, pipes y directivas que queremos compartir.
 
+#### Precarga de módulos
+
+En general, debemos considerar que cada módulo debe pasar por 4 estados que es la descarga, el Parse, Compilar y ejecutar.
+Al separar la aplicación en diferentes módulos y aplicar el Lazy loading, podemos habilitar otras características como la precarga de módulos.
+
+Para dar contexto podemos decir que con CodeSplitting hemos dividido el código, que antes se compilaba en un solo archivo main.js, en varios chunk (o bloques de código). Estos chunk mediante el lazyloading se van cargando a medida que los vamos requiriendo al hacer consultas al servidor hacia las url que están enrutadas en los archvios de routing y que se observan con la forma de 'loadchildren'. Estas rutas cargan los módulos a demanda.
+
+
+Dividir, permite mejorar:
+- La velocidad de carga de la aplicación
+- La experiencia de usuario
+- El rendimiento de la aplicación
+
+Las desventajas de esta técnica:
+
+- Se observa con conexiones lentas ya que al tener que cargar cada módulo, éste pasa por los cuatro estados pudiendo verse demorado este proceso.
+
+Para mejorar la experiencia de usuario podemos utilizar la precarga de módulos en el background, lo que permite cargar los módulos en segundo plano, mientras el usuario navega por la aplicación. Es decir, se van cargando los módulos según se van a necesitar durante los tiempos de inactividad. Esta carga se inicia posterior a la primera carga inicial.
+
+En el app-routing importamos el PreloadAllModules.
+
+La técnica del PreloadAllModules, es beneficiosa para aplicaciones con pocos móduloo ya que se estaria ocupando el hilo principal del navegador.
+
+Para una estrategia personalizada.
+
+Creamos un servicio.
+
+
+
