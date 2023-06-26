@@ -17,5 +17,8 @@ export class TokenService {
     return localStorage.getItem('token');
   }
 
+  removeToken(){
+    localStorage.removeItem('token');
+  }
 
 }
